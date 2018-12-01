@@ -1,0 +1,22 @@
+<ActionBar title="My App" class="action-bar">
+</ActionBar>
+
+<ScrollView>
+    <StackLayout>
+        <StackLayout [height]="calendarHeight">
+            <RadCalendar [(selectedDates)]="selectedDate" selectionMode="Single" [viewMode]="viewMode" [eventSource]="calendarEvents"
+                eventsViewMode="Inline|Popover" (dateSelected)="onDateSelected($event)" (navigatedToDate)="onNavigatedToDate($event)"></RadCalendar>
+        </StackLayout>
+        <show-selected-date [z-date]="zDate"></show-selected-date>
+        <StackLayout class="list-group">
+            <ng-template ngFor let-zevent [ngForOf]="selectedDayEvents">
+                <StackLayout orientation="horizontal" class="list-group-item">
+                    <Label text="Event: " textWrap="true"></Label>
+                    <Label [text]="zevent.title"></Label>
+                </StackLayout>
+            </ng-template>
+        </StackLayout>
+        <Button class="btn btn-primary btn-active" id="button" text="Add event" (tap)="addEvent($event)"></Button>
+        <Button class="btn btn-primary btn-active" id="button" text="Delete all events" (tap)="deleteAllEvents($event)"></Button>
+    </StackLayout>
+</ScrollView>
