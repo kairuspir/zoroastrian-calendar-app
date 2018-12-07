@@ -4,8 +4,8 @@
 <ScrollView>
     <StackLayout>
         <StackLayout [height]="calendarHeight">
-            <RadCalendar [(selectedDates)]="selectedDate" selectionMode="Single" [viewMode]="viewMode" [eventSource]="calendarEvents"
-                eventsViewMode="Inline|Popover" (dateSelected)="onDateSelected($event)" (navigatedToDate)="onNavigatedToDate($event)"></RadCalendar>
+            <RadCalendar [selectedDate]="selectedDate" selectionMode="Single" [viewMode]="viewMode" [eventSource]="calendarEvents"
+                [eventsViewMode]="eventsViewMode" (dateSelected)="onDateSelected($event)" (navigatedToDate)="onNavigatedToDate($event)"></RadCalendar>
         </StackLayout>
         <show-selected-date [z-date]="zDate"></show-selected-date>
         <StackLayout class="list-group">

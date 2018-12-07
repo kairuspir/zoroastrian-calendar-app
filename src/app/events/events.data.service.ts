@@ -23,7 +23,7 @@ export class EventsDataService {
     }
 
     async getAll(): Promise<Array<ZCalendarEvent>> {
-        return await this.database.all("SELECT * FROM CalendarEvent WHERE isDeleted = 0").then(async rows => {
+        return await this.database.all("SELECT id, rojId, mahId, sal, title, description, calendarType FROM CalendarEvent WHERE isDeleted = 0").then(async rows => {
             this.events = new Array<ZCalendarEvent>();
             for (var row in rows) {
                 this.events.push(new ZCalendarEvent(rows[row][0], rows[row][1], rows[row][2], rows[row][3], rows[row][4], rows[row][5], rows[row][6]));
@@ -38,10 +38,13 @@ export class EventsDataService {
         var rojId = this.calendarDataService.getRojId(date.roj);
         var mahId = this.calendarDataService.getMahId(date.mah);
         var calendarType = date.calendarType;
-        return this.database.all("SELECT * FROM CalendarEvent WHERE isDeleted = 0 and rojId = ? and mahId = ? and calendarType = ?", [rojId, mahId, calendarType]).then(rows => {
+        return this.database.all("SELECT id, rojId, mahId, sal, title, description, calendarType FROM CalendarEvent WHERE isDeleted = 0 and rojId = ? and mahId = ? and calendarType = ?", [rojId, mahId, calendarType]).then(rows => {
             this.events = new Array<ZCalendarEvent>();
+            console.log(JSON.stringify(rows));
+
             for (var row in rows) {
-                this.events.push(new ZCalendarEvent(rows[row][0], rows[row][1], rows[row][2], rows[row][3], rows[row][4], rows[row][5], rows[row][6]));
+                console.log(JSON.stringify(rows[row]));
+                this.events.push(new ZCalendarEvent(rows[row]["id"], rows[row]["rojId"], rows[row]["mahId"], rows[row]["sal"], rows[row]["title"], rows[row]["description"], rows[row]["calendarType"]));
             }
             return this.events;
         }, error => {
