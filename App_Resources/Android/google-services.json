@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "561775134922",
+    "firebase_url": "https://zoroastrian-calendar-project.firebaseio.com",
+    "project_id": "zoroastrian-calendar-project",
+    "storage_bucket": "zoroastrian-calendar-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561775134922:android:e5b4a34fb4ece9ee",
+        "android_client_info": {
+          "package_name": "org.nativescript.zoroastriancalendarapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561775134922-e7giqv3pf9iqgeoaa2vf1te5dq9t7ofv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFT9c21R6gFosKV7LN09_lRTBXSJmTikc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
