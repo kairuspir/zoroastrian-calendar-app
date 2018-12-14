@@ -40,10 +40,7 @@ export class EventsDataService {
         var calendarType = date.calendarType;
         return this.database.all("SELECT id, rojId, mahId, sal, title, description, calendarType FROM CalendarEvent WHERE isDeleted = 0 and rojId = ? and mahId = ? and calendarType = ?", [rojId, mahId, calendarType]).then(rows => {
             this.events = new Array<ZCalendarEvent>();
-            console.log(JSON.stringify(rows));
-
             for (var row in rows) {
-                console.log(JSON.stringify(rows[row]));
                 this.events.push(new ZCalendarEvent(rows[row]["id"], rows[row]["rojId"], rows[row]["mahId"], rows[row]["sal"], rows[row]["title"], rows[row]["description"], rows[row]["calendarType"]));
             }
             return this.events;

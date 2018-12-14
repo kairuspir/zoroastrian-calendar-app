@@ -5,6 +5,8 @@ import { isAndroid, isIOS, device, screen } from "tns-core-modules/platform";
 import { ZDate } from "./calendar.models";
 import { EventData } from "tns-core-modules/data/observable/observable";
 import { EventsBusinessService } from "../events/events.business.service";
+import { FirebaseService } from "../services";
+import { RouterExtensions } from "nativescript-angular/router";
 
 @Component({
     selector: "cal-month-view",
@@ -19,7 +21,11 @@ export class CalendarMonthViewComponent implements OnInit {
     selectedDayEvents: Array<CalendarEvent>;
     calendarEvents: Array<CalendarEvent>;
     calendarHeight: number;
-    constructor(private calendarService: CalendarBusinessService, private eventService: EventsBusinessService) {
+    constructor(
+        private calendarService: CalendarBusinessService,
+        private eventService: EventsBusinessService,
+        private firebaseService: FirebaseService,
+        private routerExtensions: RouterExtensions) {
     }
 
     ngOnInit(): void {
@@ -68,5 +74,10 @@ export class CalendarMonthViewComponent implements OnInit {
 
     deleteAllEvents(args: EventData) {
         this.eventService.deleteAllEvents();
+    }
+
+    logout() {
+        this.firebaseService.logout();
+        this.routerExtensions.navigate(["/login"], { clearHistory: true });
     }
 }

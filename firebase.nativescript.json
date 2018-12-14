@@ -10,7 +10,7 @@
     "messaging": false,
     "crashlytics": false,
     "crash_reporting": false,
-    "storage": false,
+    "storage": true,
     "functions": false,
     "facebook_auth": false,
     "google_auth": true,
