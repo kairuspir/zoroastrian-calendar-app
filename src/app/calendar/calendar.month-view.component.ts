@@ -1,11 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { CalendarBusinessService } from "./calendar.business.service";
+import { CalendarBusinessService, FirebaseService, EventsBusinessService } from "../services";
 import { CalendarSelectionEventData, RadCalendar, CalendarEvent, CalendarViewMode, CalendarNavigationEventData, CalendarEventsViewMode } from "nativescript-ui-calendar";
 import { isAndroid, isIOS, device, screen } from "tns-core-modules/platform";
-import { ZDate } from "./calendar.models";
+import { ZDate } from "../models/calendar.models";
 import { EventData } from "tns-core-modules/data/observable/observable";
-import { EventsBusinessService } from "../events/events.business.service";
-import { FirebaseService } from "../services";
 import { RouterExtensions } from "nativescript-angular/router";
 
 @Component({

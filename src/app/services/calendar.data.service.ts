@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { IdAndName, DayOfYear, ZDate } from "./calendar.models";
+import { IdAndName, DayOfYear, ZDate } from "../models";
 
 @Injectable({
     providedIn: "root"

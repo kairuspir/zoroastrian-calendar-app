@@ -1,8 +1,6 @@
 import { Injectable } from "@angular/core";
-import { CalendarDataService } from "./calendar.data.service";
-import { ShahanshahiDate, KadmiDate, ZDate } from "./calendar.models";
-import { transitiveScopesFor } from "@angular/core/src/render3/jit/module";
-
+import { ShahanshahiDate, KadmiDate, ZDate } from "../models";
+import { CalendarDataService } from "../services";
 
 @Injectable({
     providedIn: "root"

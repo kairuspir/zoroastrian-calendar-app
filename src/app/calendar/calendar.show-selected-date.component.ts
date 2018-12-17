@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { ZDate } from "./calendar.models";
+import { ZDate } from "../models";
 
 @Component({
     selector: "show-selected-date",

@@ -1,8 +1,3 @@
-import { Injectable } from "@angular/core";
-
-@Injectable({
-    providedIn: "root"
-})
 export class ZCalendarEvent {
     constructor(public id: number,
         public rojId: number,
