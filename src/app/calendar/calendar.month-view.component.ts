@@ -1,29 +1,35 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CalendarBusinessService, FirebaseService, EventsBusinessService } from "../services";
 import { CalendarSelectionEventData, RadCalendar, CalendarEvent, CalendarViewMode, CalendarNavigationEventData, CalendarEventsViewMode } from "nativescript-ui-calendar";
 import { isAndroid, isIOS, device, screen } from "tns-core-modules/platform";
 import { ZDate } from "../models/calendar.models";
 import { EventData } from "tns-core-modules/data/observable/observable";
 import { RouterExtensions } from "nativescript-angular/router";
+import { Observable, Subscription } from "rxjs";
 
 @Component({
     selector: "cal-month-view",
     moduleId: module.id,
     templateUrl: "./calendar.month-view.component.html",
 })
-export class CalendarMonthViewComponent implements OnInit {
+export class CalendarMonthViewComponent implements OnInit, OnDestroy {
     viewMode: string;
     eventsViewMode: string;
     selectedDate: string;
     zDate: ZDate;
-    selectedDayEvents: Array<CalendarEvent>;
+    selectedDayEvents$: Observable<Array<CalendarEvent>>;
+    selectedMonthEvents$: Observable<Array<CalendarEvent>>;
     calendarEvents: Array<CalendarEvent>;
     calendarHeight: number;
+    subscription: Subscription;
     constructor(
         private calendarService: CalendarBusinessService,
         private eventService: EventsBusinessService,
         private firebaseService: FirebaseService,
         private routerExtensions: RouterExtensions) {
+        this.selectedDayEvents$ = eventService.eventsForDay;
+        this.selectedMonthEvents$ = eventService.eventsForMonth;
+
     }
 
     ngOnInit(): void {
@@ -32,6 +38,11 @@ export class CalendarMonthViewComponent implements OnInit {
         this.calendarHeight = screen.mainScreen.heightDIPs / 2;
         this.selectedDate = new Date().toISOString();
         this.setDate(new Date());
+
+        this.subscription = this.selectedMonthEvents$.subscribe(value => this.calendarEvents = value);
+    }
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     onDateSelected(args: CalendarSelectionEventData) {
@@ -41,9 +52,7 @@ export class CalendarMonthViewComponent implements OnInit {
 
     setDate(input: Date): void {
         this.zDate = this.calendarService.convertGregorianToShahanshahi(input);
-        this.eventService.getEventsForDay(input).then(value => {
-            this.selectedDayEvents = value;
-        });
+        this.eventService.loadEventsForDay(input);
     }
 
     onItemTap(args) {
@@ -51,9 +60,7 @@ export class CalendarMonthViewComponent implements OnInit {
     }
 
     onNavigatedToDate(args: CalendarNavigationEventData) {
-        this.eventService.getEventsForMonth(args.date).then(value => {
-            this.calendarEvents = value;
-        });
+        this.eventService.loadEventsForMonth(args.date);
     }
 
     addEvent(args: EventData) {

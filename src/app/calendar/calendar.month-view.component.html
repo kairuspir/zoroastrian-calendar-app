@@ -12,7 +12,7 @@
         </StackLayout>
         <show-selected-date [z-date]="zDate"></show-selected-date>
         <StackLayout class="list-group">
-            <ng-template ngFor let-zevent [ngForOf]="selectedDayEvents">
+            <ng-template ngFor let-zevent [ngForOf]="selectedDayEvents$ | async" *ngIf="selectedDayEvents$">
                 <StackLayout orientation="horizontal" class="list-group-item">
                     <Label text="Event: " textWrap="true"></Label>
                     <Label [text]="zevent.title"></Label>

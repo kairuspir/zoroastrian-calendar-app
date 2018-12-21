@@ -1,20 +1,37 @@
 import { Injectable, NgZone } from "@angular/core";
-import { User } from "../models";
+import { User, ZFirestoreEvent } from "../models";
 import { BackendService } from "./backend.service";
 import * as firebase from "nativescript-plugin-firebase";
 import * as firebaseStorage from "nativescript-plugin-firebase/storage/storage"
-//import { Observable } from 'rxjs/Observable';
-//import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import * as firebaseFirestore from "nativescript-plugin-firebase/app"
 import { UtilsService } from './utils.service';
+import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable()
 export class FirebaseService {
+    _defaultCalendarEvents: BehaviorSubject<Array<ZFirestoreEvent>>
     constructor(
         private ngZone: NgZone,
         private utils: UtilsService
-    ) { }
+    ) {
+        this._defaultCalendarEvents = new BehaviorSubject([]);
+    }
 
+    get defaultCalendarEvents(): Observable<Array<ZFirestoreEvent>> {
+        return this._defaultCalendarEvents.asObservable();
+    }
 
+    loadDefaultCalendarEvents(): void {
+        firebaseFirestore.firestore().collection("defaultCalendarEvents")
+            .onSnapshot(snapshot => {
+                var events = new Array<ZFirestoreEvent>();
+                snapshot.forEach(docSnap => {
+                    var event = docSnap.data();
+                    events.push(new ZFirestoreEvent(event["rojId"], event["mahId"], event["description"], event["title"]));
+                });
+                this._defaultCalendarEvents.next(events);
+            });
+    }
 
     register(user: User) {
         return firebase.createUser({

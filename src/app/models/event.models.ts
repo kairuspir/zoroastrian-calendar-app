@@ -8,3 +8,10 @@ export class ZCalendarEvent {
         public calendarType: string
     ) { }
 }
+export class ZFirestoreEvent {
+    constructor(public rojId: number,
+        public mahId: number,
+        public description: string,
+        public title: string
+    ) { }
+}

@@ -25,6 +25,8 @@ export class LoginComponent {
 
 
     submit() {
+        console.log(this.isLoggingIn);
+
         this.isAuthenticating = true;
         if (this.isLoggingIn) {
             this.login();
@@ -34,14 +36,20 @@ export class LoginComponent {
     }
 
     login() {
+        console.log("In login");
+
         this.firebaseService.login(this.user)
             .then(() => {
                 this.isAuthenticating = false;
+                console.log("login successfull");
+
                 this.routerExtensions.navigate(["/"], { clearHistory: true });
 
             })
             .catch((message: any) => {
                 this.isAuthenticating = false;
+                console.log(JSON.stringify(message));
+
             });
     }
 
