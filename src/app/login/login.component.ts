@@ -1,32 +1,36 @@
-import { Component } from '@angular/core';
-import { User } from '../models/user.model';
-import { FirebaseService } from '../services';
+import { Component, OnInit } from '@angular/core';
 import { prompt } from "ui/dialogs";
 import { RouterExtensions } from 'nativescript-angular/router/router-extensions';
+import { AuthService } from '~/app/services';
+import * as Toast from 'nativescript-toasts';
+import { User } from '~/app/models';
+import { FirebaseService } from '~/app/services';
 
 @Component({
     moduleId: module.id,
-    selector: 'gf-login',
-    templateUrl: 'login.html'
+    selector: 'ns-app-auth-login',
+    templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
     user: User;
     isLoggingIn = true;
     isAuthenticating = false;
 
 
-    constructor(private firebaseService: FirebaseService,
-        private routerExtensions: RouterExtensions
+    constructor(
+        private routerExtensions: RouterExtensions,
+        private authService: AuthService,
+        private firebaseService: FirebaseService
     ) {
         this.user = new User();
+    }
+
+    ngOnInit(): void {
         this.user.email = "user@nativescript.org";
         this.user.password = "password";
     }
 
-
     submit() {
-        console.log(this.isLoggingIn);
-
         this.isAuthenticating = true;
         if (this.isLoggingIn) {
             this.login();
@@ -36,20 +40,15 @@ export class LoginComponent {
     }
 
     login() {
-        console.log("In login");
-
-        this.firebaseService.login(this.user)
+        this.authService.login(this.user)
             .then(() => {
                 this.isAuthenticating = false;
-                console.log("login successfull");
-
                 this.routerExtensions.navigate(["/"], { clearHistory: true });
 
-            })
-            .catch((message: any) => {
+            }, (message: any) => {
                 this.isAuthenticating = false;
+                Toast.show({ text: "Failed to login", duration: Toast.DURATION.SHORT });
                 console.log(JSON.stringify(message));
-
             });
     }
 

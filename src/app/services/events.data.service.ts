@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ZDate, ZCalendarEvent } from "../models";
+import { ZDate, ZCalendarEvent } from "~/app/models";
 import { CalendarDataService } from "./calendar.data.service";
 var Sqlite = require("nativescript-sqlite");
 

@@ -4,7 +4,7 @@ import { ZDate } from "../models";
 @Component({
     selector: "show-selected-date",
     moduleId: module.id,
-    templateUrl: "./calendar.show-selected-date.component.html"
+    templateUrl: "./selected-date.component.html"
 })
 export class ShowSelectedDateComponent {
     private _zDate: ZDate;

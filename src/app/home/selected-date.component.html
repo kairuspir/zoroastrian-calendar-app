@@ -1,0 +1,14 @@
+<GridLayout columns="*,*,*,*,*" rows="auto">
+    <StackLayout row="0" col="0" colspan="2">
+        <Label [text]="gregorianDate" horizontalAlignment="center" fontsize="40" color="red"></Label>
+        <Label [text]="gregorianMonthAndYear" horizontalAlignment="center"></Label>
+        <Label [text]="gregorianDay" horizontalAlignment="center"></Label>
+    </StackLayout>
+    <StackLayout row="0" col="2" colspan="3">
+        <StackLayout orientation="horizontal"><Label text="Roj: "></Label><Label text="{{zDate.roj}}"></Label></StackLayout>
+        <StackLayout orientation="horizontal"><Label text="Mah: "></Label><Label text="{{zDate.mah}}"></Label></StackLayout>
+        <StackLayout orientation="horizontal"><Label text="Sal: "></Label><Label text="{{zDate.sal}}"></Label></StackLayout>
+        <StackLayout orientation="horizontal"><Label text="Gah: "></Label><Label text="{{gah}}"></Label></StackLayout>
+        <StackLayout orientation="horizontal"><Label text="Vaar: "></Label><Label text="{{vaar}}"></Label></StackLayout>
+    </StackLayout>
+</GridLayout>

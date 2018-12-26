@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { IdAndName, DayOfYear, ZDate } from "../models";
+import { IdAndName, DayOfYear, ZDate } from "~/app/models";
 
 @Injectable({
     providedIn: "root"
@@ -15,7 +15,7 @@ export class CalendarDataService {
     private mahIndex: object;
     constructor() {
         this.calendarType = new Array<IdAndName>(
-            { id: 1, name: "+" },
+            { id: 1, name: "Shahanshahi" },
             { id: 2, name: "Kadmi" },
             { id: 3, name: "Fasli" }
         );

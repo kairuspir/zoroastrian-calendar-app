@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { ShahanshahiDate, KadmiDate, ZDate } from "../models";
-import { CalendarDataService } from "../services";
+import { ShahanshahiDate, KadmiDate, ZDate } from "~/app/models";
+import { CalendarDataService } from "~/app/services";
 
 @Injectable({
     providedIn: "root"

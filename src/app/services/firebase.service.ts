@@ -1,36 +1,57 @@
 import { Injectable, NgZone } from "@angular/core";
-import { User, ZFirestoreEvent } from "../models";
-import { BackendService } from "./backend.service";
+import { User, ZFirestoreEvent } from "~/app/models";
 import * as firebase from "nativescript-plugin-firebase";
 import * as firebaseStorage from "nativescript-plugin-firebase/storage/storage"
 import * as firebaseFirestore from "nativescript-plugin-firebase/app"
-import { UtilsService } from './utils.service';
-import { BehaviorSubject, Observable } from "rxjs";
+import { UtilsService } from "~/app/services";
 
-@Injectable()
+@Injectable({
+    providedIn: "root",
+})
 export class FirebaseService {
-    _defaultCalendarEvents: BehaviorSubject<Array<ZFirestoreEvent>>
     constructor(
         private ngZone: NgZone,
         private utils: UtilsService
-    ) {
-        this._defaultCalendarEvents = new BehaviorSubject([]);
-    }
+    ) { }
 
-    get defaultCalendarEvents(): Observable<Array<ZFirestoreEvent>> {
-        return this._defaultCalendarEvents.asObservable();
-    }
-
-    loadDefaultCalendarEvents(): void {
-        firebaseFirestore.firestore().collection("defaultCalendarEvents")
-            .onSnapshot(snapshot => {
+    loadDefaultCalendarEvents() {
+        return this.getCollection("defaultCalendarEvents")
+            .then(snapshot => {
                 var events = new Array<ZFirestoreEvent>();
                 snapshot.forEach(docSnap => {
                     var event = docSnap.data();
                     events.push(new ZFirestoreEvent(event["rojId"], event["mahId"], event["description"], event["title"]));
                 });
-                this._defaultCalendarEvents.next(events);
+                return events;
             });
+    }
+
+    getLastUpdatedDate() {
+        return this.getDocument("settings", "lastUpdated").then(doc => {
+            var serverDate = new Date(0);
+            if (doc.exists) {
+                serverDate = new Date(doc.data().value);
+            }
+            return serverDate;
+        });
+    }
+
+    private getDocument(collectionPath: string, documentPath: string) {
+        return firebaseFirestore.firestore().collection(collectionPath).doc(documentPath).get().then(doc => {
+            var result = this.ngZone.run(() => {
+                return doc;
+            });
+            return result;
+        });
+    }
+
+    private getCollection(collectionPath: string) {
+        return firebaseFirestore.firestore().collection(collectionPath).get().then(snapshot => {
+            var result = this.ngZone.run(() => {
+                return snapshot;
+            });
+            return result;
+        });
     }
 
     register(user: User) {
@@ -54,17 +75,18 @@ export class FirebaseService {
                 email: user.email,
                 password: user.password
             },
-        }).then((result: any) => {
-            BackendService.token = result.uid;
-            return JSON.stringify(result);
-        }, (errorMessage: any) => {
-            alert(errorMessage);
+        }).then(user => {
+            var result = this.ngZone.run(() => {
+                return user;
+            });
+            return result;
         });
     }
 
     logout() {
-        BackendService.token = "";
-        firebase.logout();
+        return firebase.logout().then(() => {
+            this.ngZone.run(() => { });
+        });
     }
 
     resetPassword(email) {

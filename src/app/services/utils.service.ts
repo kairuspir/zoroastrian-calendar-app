@@ -1,7 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 import * as fs from 'file-system';
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+})
 export class UtilsService {
 
     public getFilename(path: string) {

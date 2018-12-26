@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
-import { CalendarDataService, EventsDataService, CalendarBusinessService, FirebaseService } from "../services";
-import { ZCalendarEvent, ZDate } from "../models";
+import { CalendarDataService, EventsDataService, CalendarBusinessService } from "~/app/services";
+import { ZCalendarEvent, ZDate } from "~/app/models";
 import { CalendarEvent } from "nativescript-ui-calendar";
 import { from, Observable, BehaviorSubject } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, filter } from "rxjs/operators";
 import "rxjs/add/observable/concat";
+import { FirebaseLocalStoreService } from "~/app/services";
 
 @Injectable({ providedIn: "root" })
 export class EventsBusinessService {
@@ -14,7 +15,7 @@ export class EventsBusinessService {
         private calendarDataService: CalendarDataService,
         private eventsDataService: EventsDataService,
         private calendarBusinessService: CalendarBusinessService,
-        private firebaseService: FirebaseService
+        private firebaseService: FirebaseLocalStoreService
     ) {
         this._eventsForDay = new BehaviorSubject([]);
         this._eventsForMonth = new BehaviorSubject([]);
@@ -59,14 +60,29 @@ export class EventsBusinessService {
                 });
                 return mapResult;
             }));
-        var fEvents$ = this.firebaseService.defaultCalendarEvents.pipe(map(events => {
+        var fsEvents$ = this.firebaseService.defaultCalendarEvents.pipe(map(events => {
             var mapResult = new Array<CalendarEvent>();
+            var rojId = this.calendarDataService.getRojId(sDate.roj);
+            var mahId = this.calendarDataService.getMahId(sDate.mah);
             events.forEach(event => {
-                mapResult.push(new CalendarEvent(event.title, input, input, true))
+                if (event.rojId == rojId && event.mahId == mahId) {
+                    mapResult.push(new CalendarEvent(event.title, input, input, true));
+                }
             });
             return mapResult;
         }));
-        var result = Observable.concat(sEvents$, kEvents$, fEvents$)
+        var fkEvents$ = this.firebaseService.defaultCalendarEvents.pipe(map(events => {
+            var mapResult = new Array<CalendarEvent>();
+            var rojId = this.calendarDataService.getRojId(kDate.roj);
+            var mahId = this.calendarDataService.getMahId(kDate.mah);
+            events.forEach(event => {
+                if (event.rojId == rojId && event.mahId == mahId) {
+                    mapResult.push(new CalendarEvent(event.title, input, input, true));
+                }
+            });
+            return mapResult;
+        }));
+        var result = Observable.concat(sEvents$, kEvents$, fsEvents$, fkEvents$)
         return result;
     }
 

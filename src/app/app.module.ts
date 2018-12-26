@@ -1,18 +1,18 @@
 import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { NativeScriptUICalendarModule } from "nativescript-ui-calendar/angular"
+import { NativeScriptUISideDrawerModule } from "nativescript-ui-sidedrawer/angular";
 
-import { AppRoutingModule, authProviders } from "./app-routing.module";
+import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
+
 import { ItemsComponent } from "./item/items.component";
 import { ItemDetailComponent } from "./item/item-detail.component";
-import { CalendarMonthViewComponent } from "./calendar/calendar.month-view.component";
-import { ShowSelectedDateComponent } from "./calendar/calendar.show-selected-date.component";
-import { LoginModule } from "./login/login.module";
-import { BackendService, FirebaseService, UtilsService } from "./services";
+import { NativeScriptRouterModule } from "nativescript-angular/router";
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
-// import { NativeScriptFormsModule } from "nativescript-angular/forms";
+import { NativeScriptFormsModule } from "nativescript-angular/forms";
 
 // Uncomment and add to NgModule imports if you need to use the HttpClient wrapper
 // import { NativeScriptHttpClientModule } from "nativescript-angular/http-client";
@@ -23,18 +23,19 @@ import { BackendService, FirebaseService, UtilsService } from "./services";
     ],
     imports: [
         NativeScriptModule,
+        NativeScriptRouterModule,
         NativeScriptUICalendarModule,
-        AppRoutingModule,
-        LoginModule
+        NativeScriptUISideDrawerModule,
+        NativeScriptFormsModule,
+        AppRoutingModule
     ],
     declarations: [
         AppComponent,
-        ItemsComponent,
+        PageNotFoundComponent,
         ItemDetailComponent,
-        CalendarMonthViewComponent,
-        ShowSelectedDateComponent
+        ItemsComponent
     ],
-    providers: [authProviders, BackendService, FirebaseService, UtilsService],
+    providers: [],
     schemas: [
         NO_ERRORS_SCHEMA
     ]
