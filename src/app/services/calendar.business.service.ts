@@ -30,8 +30,8 @@ export class CalendarBusinessService {
         var refrenceDate = new Date(70, 0, 1);
         var totalMilliseconds = input.valueOf() - refrenceDate.valueOf();
 
-        var year = 1339;
-        var dayInYear = 126;
+        var year = refrenceYear;
+        var dayInYear = refrenceDayInYear;
         if (totalMilliseconds > 0) {
             while (totalMilliseconds >= this.millisecondsInYear) {
                 year += 1;
