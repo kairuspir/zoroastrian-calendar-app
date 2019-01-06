@@ -20,7 +20,7 @@ export class FirebaseService {
                 var events = new Array<ZFirestoreEvent>();
                 snapshot.forEach(docSnap => {
                     var event = docSnap.data();
-                    events.push(new ZFirestoreEvent(event["rojId"], event["mahId"], event["description"], event["title"]));
+                    events.push(new ZFirestoreEvent(event["rojId"], event["mahId"], event["description"], event["title"], 0));
                 });
                 return events;
             });

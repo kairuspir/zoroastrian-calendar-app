@@ -496,6 +496,12 @@ export class CalendarDataService {
         var result = this.dayOfYearIndex[mah][roj]
         return result;
     }
+    getDayInYearByIds(rojId: number, mahId: number): number {
+        var mah = this.mah[mahId - 1].name;
+        var roj = this.roj[rojId - 1].name;
+        var result = this.dayOfYearIndex[mah][roj]
+        return result;
+    }
     getRojId(roj: string): number {
         return this.rojIndex[roj];
     }

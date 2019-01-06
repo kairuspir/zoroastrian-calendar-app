@@ -1,8 +1,9 @@
 import { Injectable, NgZone } from "@angular/core";
-import { ApplicationStorageService, FirebaseService } from "~/app/services";
+import { ApplicationStorageService, FirebaseService, CalendarDataService } from "~/app/services";
 import { BehaviorSubject, Observable } from "rxjs";
 import { ZFirestoreEvent } from "~/app/models";
 import * as couchbaseModule from "nativescript-couchbase"
+import "rxjs/add/operator/share"
 
 @Injectable({
     providedIn: "root"
@@ -12,7 +13,8 @@ export class FirebaseLocalStoreService {
     _db: couchbaseModule.Couchbase;
     constructor(
         private appStore: ApplicationStorageService,
-        private fireStore: FirebaseService
+        private fireStore: FirebaseService,
+        private calendarDataService: CalendarDataService
     ) {
         this._defaultCalendarEvents = new BehaviorSubject([]);
         this.initDb();
@@ -24,29 +26,35 @@ export class FirebaseLocalStoreService {
     }
 
     refreshStore() {
-        this.fireStore.getLastUpdatedDate().then(serverDate => {
+        return this.fireStore.getLastUpdatedDate().then(serverDate => {
             var serverDateValue = serverDate.valueOf();
             var localDateValue = new Date(this.appStore.lastUpdatedString).valueOf()
 
             if (localDateValue < serverDateValue) {
-                this._db.destroyDatabase();
-                this.initDb();
-                console.log("Updating firebase local store");
-                this.fireStore.loadDefaultCalendarEvents()
-                    .then(events => {
-                        events.forEach(event => {
-                            this._db.createDocument(event, event.title);
-                        });
-                        return events;
-                    })
-                    .then(events => {
-                        this._defaultCalendarEvents.next(events);
-                    }).then(() => {
+                this.forceRefreshStore()
+                    .then(() => {
                         this.appStore.lastUpdatedString = serverDate.toISOString();
-                    });
-
+                    });;
             }
         });
+    }
+
+    forceRefreshStore() {
+        this._db.destroyDatabase();
+        this.initDb();
+        console.log("Updating firebase local store");
+        return this.fireStore.loadDefaultCalendarEvents()
+            .then(events => {
+                events.forEach(event => {
+                    event.dayOfYear = this.calendarDataService.getDayInYearByIds(event.rojId, event.mahId);
+                    console.log("day of year: " + event.dayOfYear + ", mah:" + event.mahId + ", roj: " + event.rojId + ", title: " + event.title);
+                    this._db.createDocument(event, event.title);
+                });
+                return events;
+            })
+            .then(events => {
+                this._defaultCalendarEvents.next(events);
+            });
     }
 
     private initDb(): void {

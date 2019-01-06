@@ -15,6 +15,11 @@
                     <Label col="0" text="&#xf015;" class="fa"></Label>
                     <Label col="1" text="Home" class="p-r-10"></Label>
                 </GridLayout>
+                <GridLayout columns="auto, *" class="sidedrawer-list-item" [class.selected]="isComponentSelected('/event')"
+                    (tap)="onNavItemTap('/events')">
+                    <Label col="0" text="&#xf015;" class="fa"></Label>
+                    <Label col="1" text="Events" class="p-r-10"></Label>
+                </GridLayout>
                 <GridLayout columns="auto, *" class="sidedrawer-list-item" [class.selected]="isComponentSelected('/profile')"
                     (tap)="onNavItemTap('/profile')">
                     <Label col="0" text="&#xf015;" class="fa"></Label>

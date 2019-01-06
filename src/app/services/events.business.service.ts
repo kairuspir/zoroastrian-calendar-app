@@ -2,10 +2,13 @@ import { Injectable } from "@angular/core";
 import { CalendarDataService, EventsDataService, CalendarBusinessService } from "~/app/services";
 import { ZCalendarEvent, ZDate } from "~/app/models";
 import { CalendarEvent } from "nativescript-ui-calendar";
-import { from, Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 import { map, filter } from "rxjs/operators";
-import "rxjs/add/observable/concat";
+import "rxjs/add/observable/merge";
 import { FirebaseLocalStoreService } from "~/app/services";
+import { fromPromise } from "rxjs/internal/observable/fromPromise";
+import "rxjs/add/observable/forkJoin";
+import "rxjs/add/operator/first"
 
 @Injectable({ providedIn: "root" })
 export class EventsBusinessService {
@@ -33,18 +36,25 @@ export class EventsBusinessService {
         //var result = new Array<CalendarEvent>();
         var obsArray = new Array<Observable<Array<CalendarEvent>>>();
         while (startDate.getMonth() == month) {
-            obsArray.push(this.getEventsForDay(startDate));
+            obsArray.push(this.getEventsForDay(startDate).first());
             startDate.setHours(24);
         }
-        Observable.concat(...obsArray).subscribe(events => {
-            this._eventsForMonth.next(events);
-        });;
+        Observable.forkJoin(...obsArray)
+            .pipe(map(value => {
+                var mapResult = new Array<CalendarEvent>();
+                value.forEach(item => { mapResult.push(...item); });
+                return mapResult;
+            }))
+            .first()
+            .subscribe(events => {
+                this._eventsForMonth.next(events);
+            });;
     }
 
     getEventsForDay(input: Date): Observable<Array<CalendarEvent>> {
         var sDate = this.calendarBusinessService.convertGregorianToShahanshahi(input);
         var kDate = this.calendarBusinessService.convertGregorianToKadmi(input);
-        var sEvents$ = from(this.eventsDataService.getRecurringEventsForDay(sDate))
+        var sEvents$ = fromPromise(this.eventsDataService.getRecurringEventsForDay(sDate))
             .pipe(map(events => {
                 var mapResult = new Array<CalendarEvent>();
                 events.forEach(event => {
@@ -52,7 +62,7 @@ export class EventsBusinessService {
                 });
                 return mapResult;
             }));
-        var kEvents$ = from(this.eventsDataService.getRecurringEventsForDay(kDate))
+        var kEvents$ = fromPromise(this.eventsDataService.getRecurringEventsForDay(kDate))
             .pipe(map(events => {
                 var mapResult = new Array<CalendarEvent>();
                 events.forEach(event => {
@@ -62,10 +72,9 @@ export class EventsBusinessService {
             }));
         var fsEvents$ = this.firebaseService.defaultCalendarEvents.pipe(map(events => {
             var mapResult = new Array<CalendarEvent>();
-            var rojId = this.calendarDataService.getRojId(sDate.roj);
-            var mahId = this.calendarDataService.getMahId(sDate.mah);
+            var dayId = this.calendarDataService.getDayInYear(sDate.roj, sDate.mah);
             events.forEach(event => {
-                if (event.rojId == rojId && event.mahId == mahId) {
+                if (event.dayOfYear == dayId) {
                     mapResult.push(new CalendarEvent(event.title, input, input, true));
                 }
             });
@@ -73,23 +82,35 @@ export class EventsBusinessService {
         }));
         var fkEvents$ = this.firebaseService.defaultCalendarEvents.pipe(map(events => {
             var mapResult = new Array<CalendarEvent>();
-            var rojId = this.calendarDataService.getRojId(kDate.roj);
-            var mahId = this.calendarDataService.getMahId(kDate.mah);
+            var dayId = this.calendarDataService.getDayInYear(kDate.roj, kDate.mah);
             events.forEach(event => {
-                if (event.rojId == rojId && event.mahId == mahId) {
+                if (event.dayOfYear == dayId) {
                     mapResult.push(new CalendarEvent(event.title, input, input, true));
                 }
             });
             return mapResult;
         }));
-        var result = Observable.concat(sEvents$, kEvents$, fsEvents$, fkEvents$)
+        var result = Observable.forkJoin(sEvents$.first(), kEvents$.first(), fsEvents$.first(), fkEvents$.first())
+            .pipe(map(value => {
+                var mapResult = new Array<CalendarEvent>();
+                value.forEach(item => { mapResult.push(...item); });
+                return mapResult;
+            }))
         return result;
     }
 
     loadEventsForDay(input: Date): void {
-        this.getEventsForDay(input).subscribe(events => {
+        this.getEventsForDay(input).first().subscribe(events => {
             this._eventsForDay.next(events);
         });
+    }
+
+    getAllFirestoreEvents() {
+        return this.firebaseService.defaultCalendarEvents.pipe(map(value => {
+            var mapResult = new Array<string>();
+            value.forEach(item => { mapResult.push(JSON.stringify(item)); });
+            return mapResult;
+        })).share();
     }
 
     async getAll(): Promise<Array<ZCalendarEvent>> {

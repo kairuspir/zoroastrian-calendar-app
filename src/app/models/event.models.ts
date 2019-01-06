@@ -12,6 +12,7 @@ export class ZFirestoreEvent {
     constructor(public rojId: number,
         public mahId: number,
         public description: string,
-        public title: string
+        public title: string,
+        public dayOfYear: number
     ) { }
 }

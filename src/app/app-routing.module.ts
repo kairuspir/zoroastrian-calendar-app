@@ -15,6 +15,7 @@ const routes: Routes = [
     { path: "", redirectTo: "/home", pathMatch: "full" },
     { path: "login", loadChildren: "~/app/login/login.module#LoginModule" },
     { path: "home", loadChildren: "~/app/home/home.module#HomeModule", canActivate: [AuthGuard] },
+    { path: "events", loadChildren: "~/app/events/events.module#EventsModule", canActivate: [AuthGuard] },
     { path: "settings", loadChildren: "~/app/settings/settings.module#SettingsModule", canActivate: [AuthGuard] },
     { path: "profile", loadChildren: "~/app/profile/profile.module#ProfileModule", canActivate: [AuthGuard] },
 
