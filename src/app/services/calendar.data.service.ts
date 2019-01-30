@@ -489,7 +489,7 @@ export class CalendarDataService {
     }
     getMahName(dayInYear: number): string {
         var mahId = this.dayOfYear[dayInYear - 1].mahId;
-        var mahName = this.mah[mahId - 1].name;
+        var mahName = this.getMahNameById(mahId);
         return mahName;
     }
     getDayInYear(roj: string, mah: string): number {
@@ -497,7 +497,7 @@ export class CalendarDataService {
         return result;
     }
     getDayInYearByIds(rojId: number, mahId: number): number {
-        var mah = this.mah[mahId - 1].name;
+        var mah = this.getMahNameById(mahId);
         var roj = this.roj[rojId - 1].name;
         var result = this.dayOfYearIndex[mah][roj]
         return result;
@@ -505,8 +505,14 @@ export class CalendarDataService {
     getRojId(roj: string): number {
         return this.rojIndex[roj];
     }
+    getRojNameById(rojId: number) {
+        return this.roj[rojId - 1].name;
+    }
     getMahId(mah: string): number {
         return this.mahIndex[mah];
+    }
+    getMahNameById(mahId: number): string {
+        return this.mah[mahId - 1].name;
     }
     getDateRange(startDate: ZDate, endDate: ZDate): Array<ZDate> {
         var startDayInYear = this.getDayInYear(startDate.roj, startDate.mah);

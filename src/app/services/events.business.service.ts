@@ -106,11 +106,7 @@ export class EventsBusinessService {
     }
 
     getAllFirestoreEvents() {
-        return this.firebaseService.defaultCalendarEvents.pipe(map(value => {
-            var mapResult = new Array<string>();
-            value.forEach(item => { mapResult.push(JSON.stringify(item)); });
-            return mapResult;
-        })).share();
+        return this.firebaseService.defaultCalendarEvents.share();
     }
 
     async getAll(): Promise<Array<ZCalendarEvent>> {

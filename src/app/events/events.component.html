@@ -14,13 +14,19 @@
     <Label class="action-bar-title" text="Events"></Label>
 </ActionBar>
 
-<ScrollView>
-    <StackLayout>
-        <ListView [items]="firestoreEvents$ | async" class="list-group" *ngIf="firestoreEvents$">
-            <ng-template let-item="item">
-                <Label [text]="item" class="list-group-item"></Label>
-            </ng-template>
-        </ListView>
-        <button text="Force update list" (tap)="refreshFirestore()"></button>
-    </StackLayout>
-</ScrollView>
+<StackLayout class="page">
+    <RadListView [items]="firestoreEvents$ | async" *ngIf="firestoreEvents$" #eventListView class="list-group">
+        <ng-template tkListItemTemplate let-item="item">
+            <StackLayout>
+                <label [text]="item.monthName" class="groupLabel"></label>
+                <StackLayout *ngFor="let monthEvent of item.monthEvents">
+                    <label [text]="monthEvent.rojName" class="groupLabel"></label>
+                    <StackLayout *ngFor="let dayEvent of monthEvent.dayEvents">
+                        <label [text]="dayEvent.title" class="list-group-item"></label>
+                    </StackLayout>
+                </StackLayout>
+            </StackLayout>
+        </ng-template>
+    </RadListView>
+    <button text="Force update list" (tap)="refreshFirestore()"></button>
+</StackLayout>

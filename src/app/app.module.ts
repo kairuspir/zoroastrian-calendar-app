@@ -2,6 +2,7 @@ import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { NativeScriptUICalendarModule } from "nativescript-ui-calendar/angular"
 import { NativeScriptUISideDrawerModule } from "nativescript-ui-sidedrawer/angular";
+import { NativeScriptUIListViewModule } from "nativescript-ui-listview/angular";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -26,6 +27,7 @@ import { NativeScriptFormsModule } from "nativescript-angular/forms";
         NativeScriptRouterModule,
         NativeScriptUICalendarModule,
         NativeScriptUISideDrawerModule,
+        //NativeScriptUIListViewModule,
         NativeScriptFormsModule,
         AppRoutingModule
     ],
